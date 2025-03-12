@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Top123 Clipboard",
+  "version": "1.0",
+  "description": "快速粘贴文本内容的 Chrome 插件",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

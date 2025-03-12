@@ -1,0 +1,46 @@
+.container {
+  width: 300px;
+  padding: 15px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+textarea {
+  height: 100px;
+}
+
+button {
+  width: 100%;
+  padding: 8px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#mappingList {
+  margin-top: 15px;
+}
+
+.mapping-item {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0;
+}
+
+.delete-btn {
+  color: red;
+  float: right;
+  cursor: pointer;
+}

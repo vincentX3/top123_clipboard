@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Top123 Clipboard 设置</h2>
+    <div class="form">
+      <div class="form-group">
+        <input type="text" id="urlPattern" placeholder="网址模式 (例如: *.github.com)">
+      </div>
+      <div class="form-group">
+        <input type="text" id="shortcut" placeholder="快捷键 (例如: ctrl+1)">
+      </div>
+      <div class="form-group">
+        <textarea id="content" placeholder="要粘贴的文本内容"></textarea>
+      </div>
+      <button id="save">保存设置</button>
+    </div>
+    <div id="mappingList"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
