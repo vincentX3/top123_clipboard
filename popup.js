@@ -88,6 +88,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     chrome.storage.sync.get(['mappings'], function(result) {
       const mappings = result.mappings || [];
+      
+      // 检查快捷键冲突
+      const conflictMapping = mappings.find(mapping => {
+        // 检查相同URL模式下的快捷键冲突
+        const urlRegex = new RegExp(mapping.urlPattern.replace(/\*/g, '.*'));
+        const newUrlRegex = new RegExp(urlPattern.replace(/\*/g, '.*'));
+        
+        return (urlRegex.test(urlPattern) || newUrlRegex.test(mapping.urlPattern)) && 
+               mapping.shortcut.toLowerCase() === shortcut.toLowerCase();
+      });
+      
+      if (conflictMapping) {
+        const confirmOverwrite = confirm(
+          `检测到快捷键 "${shortcut}" 在相似URL模式下已存在：\n` +
+          `URL: ${conflictMapping.urlPattern}\n` +
+          `内容: ${conflictMapping.content.substring(0, 30)}...\n\n` +
+          `是否要覆盖现有配置？`
+        );
+        
+        if (confirmOverwrite) {
+          // 删除冲突的配置
+          const index = mappings.indexOf(conflictMapping);
+          mappings.splice(index, 1);
+        } else {
+          return;
+        }
+      }
+      
+      // 添加新配置
       mappings.push({ urlPattern, shortcut, content });
       
       chrome.storage.sync.set({ mappings }, function() {
