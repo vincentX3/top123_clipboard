@@ -3,24 +3,54 @@ chrome.storage.sync.get(['mappings'], function(result) {
   
   document.addEventListener('keydown', function(e) {
     mappings.forEach(mapping => {
-      const shortcutParts = mapping.shortcut.toLowerCase().split('+');
-      const isCtrl = shortcutParts.includes('ctrl') && e.ctrlKey;
-      const isAlt = shortcutParts.includes('alt') && e.altKey;
-      const isShift = shortcutParts.includes('shift') && e.shiftKey;
-      const key = shortcutParts[shortcutParts.length - 1];
+      // 解析保存的快捷键
+      const keys = mapping.shortcut.toLowerCase().split('+');
       
-      if (window.location.href.match(mapping.urlPattern.replace('*', '.*'))) {
-        if (isCtrl && isAlt && isShift && e.key.toLowerCase() === key ||
-            isCtrl && isAlt && !isShift && e.key.toLowerCase() === key ||
-            isCtrl && !isAlt && !isShift && e.key.toLowerCase() === key) {
-          e.preventDefault();
-          const activeElement = document.activeElement;
-          if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+      // 检查当前按键是否匹配快捷键组合
+      const matchesShortcut = keys.every(key => {
+        switch(key) {
+          case 'ctrl': return e.ctrlKey;
+          case 'alt': return e.altKey;
+          case 'shift': return e.shiftKey;
+          case 'cmd': return e.metaKey;
+          default: return e.key.toLowerCase() === key;
+        }
+      });
+      
+      // 检查URL是否匹配
+      const urlMatches = window.location.href.match(
+        new RegExp(mapping.urlPattern.replace(/\*/g, '.*'))
+      );
+      
+      if (matchesShortcut && urlMatches) {
+        e.preventDefault();
+        
+        // 获取当前焦点元素
+        const activeElement = document.activeElement;
+        
+        // 处理输入框和文本框
+        if (activeElement && (
+          activeElement.tagName === 'INPUT' ||
+          activeElement.tagName === 'TEXTAREA' ||
+          activeElement.contentEditable === 'true'
+        )) {
+          // 处理可编辑元素
+          if (activeElement.isContentEditable) {
+            // 处理富文本编辑器
+            document.execCommand('insertText', false, mapping.content);
+          } else {
+            // 处理普通输入框
             const start = activeElement.selectionStart;
             const end = activeElement.selectionEnd;
-            activeElement.value = activeElement.value.substring(0, start) + 
-                                mapping.content + 
-                                activeElement.value.substring(end);
+            const value = activeElement.value;
+            
+            activeElement.value = value.substring(0, start) +
+                                mapping.content +
+                                value.substring(end);
+            
+            // 更新光标位置
+            activeElement.selectionStart = activeElement.selectionEnd = 
+              start + mapping.content.length;
           }
         }
       }

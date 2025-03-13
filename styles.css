@@ -44,3 +44,20 @@ button:hover {
   float: right;
   cursor: pointer;
 }
+
+#shortcut {
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+#clearShortcut {
+  margin-top: 5px;
+  width: auto;
+  padding: 4px 8px;
+  font-size: 12px;
+  background-color: #ff4444;
+}
+
+#clearShortcut:hover {
+  background-color: #cc0000;
+}
